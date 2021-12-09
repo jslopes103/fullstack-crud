@@ -4,7 +4,7 @@ const PersonSchema = mongoose.Schema({
     id: String,
     firstName: String,
     lastName: String,
-    emailId: String
+    email: String
 }, {
     timestamps: true
 });
