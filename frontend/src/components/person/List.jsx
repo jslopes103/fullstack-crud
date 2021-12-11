@@ -1,95 +1,76 @@
-import React, { Component } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PersonService from "../../service/person.service";
 
-class ListPersonComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      persons: [],
-    };
-    this.addPerson = this.addPerson.bind(this);
-    this.editPerson = this.editPerson.bind(this);
-    this.deletePerson = this.deletePerson.bind(this);
-  }
-  deletePerson(_id) {
-    PersonService.deletePerson(_id).then((res) => {
-      this.setState({
-        persons: this.state.persons.filter((person) => person._id !== _id),
-      });
-    });
-  }
-  viewPerson(_id) {
-    this.props.history.push(`/view-person/${_id}`);
-  }
-  editPerson(_id) {
-    this.props.history.push(`/add-person/${_id}`);
-  }
-  componentDidMount() {
+function ListPersonComponent() {
+  let [persons, setPersons] = useState([]);
+
+  useEffect(() => {
     PersonService.getPersons().then((res) => {
-      this.setState({ persons: res.data });
+      const arr = res.data;
+      setPersons(arr);
     });
-  }
-  addPerson() {
-    this.props.history.push("/add-person/_add");
-  }
-  render() {
-    return (
-      <div>
-        <div className="content-wrapper">
-          <h2 className="text-center">Persons List</h2>
-          <div className="row">
-            <button className="btn btn-primary" onClick={this.addPerson}>
-              {" "}
-              Add Person
-            </button>
-          </div>
-          <br></br>
-          <div className="row">
-            <table className="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th> Person First Name</th>
-                  <th> Person Last Name</th>
-                  <th> Person Email</th>
-                  <th> Actions</th>
+  }, []);
+
+  const deleteItem = (_id) => {
+    PersonService.deletePerson(_id).then(() => {
+      setPersons(persons.filter((person) => person._id !== _id));
+    });
+  };
+
+  return (
+    <Fragment>
+      <div className="content-wrapper">
+        <h2 className="text-center">Persons List</h2>
+        <div className="row">
+          <Link className="btn btn-primary" to={"/add/_add"}>
+            Add Person
+          </Link>
+        </div>
+        <br></br>
+        <div className="row">
+          <table className="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th> Person First Name</th>
+                <th> Person Last Name</th>
+                <th> Person Email</th>
+                <th> Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {persons.map((person) => (
+                <tr key={person._id}>
+                  <td> {person.firstName} </td>
+                  <td> {person.lastName}</td>
+                  <td> {person.email}</td>
+                  <td>
+                    <Link to={`/add/${person._id}`} className="btn btn-info">
+                      Update
+                    </Link>
+                    <button
+                      style={{ marginLeft: "10px" }}
+                      className="btn btn-danger"
+                      onClick={() => deleteItem(person._id)}
+                    >
+                      Delete
+                    </button>
+                    <Link
+                      style={{ marginLeft: "10px" }}
+                      to={`/view/${person._id}`}
+                      className="btn btn-info"
+                    >
+                      View
+                    </Link>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {this.state.persons.map((person) => (
-                  <tr key={person._id}>
-                    <td> {person.firstName} </td>
-                    <td> {person.lastName}</td>
-                    <td> {person.email}</td>
-                    <td>
-                      <button
-                        onClick={() => this.editPerson(person._id)}
-                        className="btn btn-info"
-                      >
-                        Update{" "}
-                      </button>
-                      <button
-                        style={{ marginLeft: "10px" }}
-                        onClick={() => this.deletePerson(person._id)}
-                        className="btn btn-danger"
-                      >
-                        Delete{" "}
-                      </button>
-                      <button
-                        style={{ marginLeft: "10px" }}
-                        onClick={() => this.viewPerson(person._id)}
-                        className="btn btn-info"
-                      >
-                        View{" "}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-    );
-  }
+    </Fragment>
+  );
 }
+
 export default ListPersonComponent;

@@ -10,7 +10,10 @@ app.use(cors());
 
 mongoose.Promise = global.Promise;
 mongoose
-  .connect("<MONGO_URL>", { useNewUrlParser: true })
+  .connect(
+    "mongodb+srv://root:root@cluster0.rx7qa.mongodb.net/fullstack-crud",
+    { useNewUrlParser: true }
+  )
   .then(() => {
     console.log("Successfully connected to the database");
   })
