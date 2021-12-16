@@ -4,6 +4,10 @@ import CreateUserComponent from "./components/person/Create";
 import ListPersonComponent from "./components/person/List";
 import ViewPersonComponent from "./components/person/View";
 import Menu from "./components/general/Menu";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 export default class App extends Component {
   render() {

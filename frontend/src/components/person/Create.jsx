@@ -1,6 +1,19 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Divider,
+  Fab,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import PersonService from "../../service/person.service";
+import BackIcon from "@mui/icons-material/ChevronLeft";
 
 function CreatePersonComponent() {
   const params = useParams();
@@ -11,6 +24,10 @@ function CreatePersonComponent() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
 
+  const [firstNameError, setFirstNameError] = useState(true);
+  const [lastNameError, setLastNameError] = useState(true);
+  const [emailError, setEmailError] = useState(true);
+
   useEffect(() => {
     if (_id !== "_add") {
       PersonService.getPersonById(_id).then((res) => {
@@ -19,6 +36,10 @@ function CreatePersonComponent() {
         setFirstName(person.firstName);
         setLastName(person.lastName);
         setEmail(person.email);
+
+        setFirstNameError(false);
+        setLastNameError(false);
+        setEmailError(false);
       });
     }
   }, [_id]);
@@ -47,82 +68,168 @@ function CreatePersonComponent() {
 
   const changeFirstNameHandler = (event) => {
     setFirstName(event.target.value);
+
+    setFirstNameError(false);
+    if (event.target.value.trim() === "") {
+      setFirstNameError(true);
+    }
   };
 
   const changeLastNameHandler = (event) => {
     setLastName(event.target.value);
+
+    setLastNameError(false);
+    if (event.target.value.trim() === "") {
+      setLastNameError(true);
+    }
   };
 
   const changeEmailHandler = (event) => {
     setEmail(event.target.value);
+
+    setEmailError(false);
+
+    if (
+      event.target.value.trim() === "" ||
+      !event.target.value.match(
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      )
+    ) {
+      setEmailError(true);
+    }
   };
 
   const getTitle = () => {
     if (_id === "_add") {
-      return <h3 className="text-center">Add Person</h3>;
+      return "Add Contact";
     } else {
-      return <h3 className="text-center">Update Person</h3>;
+      return "Update Contact";
     }
   };
 
   return (
-    <Fragment>
-      <br></br>
-      <div className="content-wrapper">
-        <div className="row">
-          <div className="card col-md-6 offset-md-3 offset-md-3">
-            {getTitle()}
-            <div className="card-body">
-              <form>
-                <div className="form-group">
-                  <label> First Name: </label>
-                  <input
-                    placeholder="First Name"
-                    name="firstName"
-                    className="form-control"
-                    value={firstName}
-                    onChange={changeFirstNameHandler}
-                  />
-                </div>
-                <div className="form-group">
-                  <label> Last Name: </label>
-                  <input
-                    placeholder="Last Name"
-                    name="lastName"
-                    className="form-control"
-                    value={lastName}
-                    onChange={changeLastNameHandler}
-                  />
-                </div>
-                <div className="form-group">
-                  <label> Email: </label>
-                  <input
-                    placeholder="Email Address"
-                    name="email"
-                    className="form-control"
-                    value={email}
-                    onChange={changeEmailHandler}
-                  />
-                </div>
-                <button
-                  className="btn btn-success"
+    <Box
+      sx={{
+        bgcolor: "background.paper",
+        pt: 10,
+        pb: 6,
+      }}
+    >
+      <Container>
+        <Fab
+          sx={{
+            my: -4,
+            mx: -4,
+          }}
+          color="primary"
+          href="/"
+        >
+          <BackIcon />
+        </Fab>
+        <Card component="form" noValidate>
+          <CardContent>
+            <Typography variant="h6">{getTitle()}</Typography>
+            <Divider
+              sx={{
+                p: 1,
+              }}
+            />
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                p: 1,
+                width: "100%",
+              }}
+            >
+              <Grid
+                item
+                sx={{
+                  width: "50%",
+                }}
+              >
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  required
+                  name="firstName"
+                  error={firstNameError}
+                  label="First name"
+                  value={firstName}
+                  helperText="First name is Required"
+                  onChange={changeFirstNameHandler}
+                />
+              </Grid>
+              <Grid
+                item
+                sx={{
+                  width: "50%",
+                }}
+              >
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  required
+                  name="lastName"
+                  error={lastNameError}
+                  label="Last name"
+                  value={lastName}
+                  helperText="Last name is Required"
+                  onChange={changeLastNameHandler}
+                />
+              </Grid>
+              <Grid
+                item
+                sx={{
+                  width: "100%",
+                }}
+              >
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  required
+                  name="email"
+                  error={emailError}
+                  label="E-mail"
+                  value={email}
+                  helperText="E-mail is Required and needs to be valid"
+                  onChange={changeEmailHandler}
+                />
+              </Grid>
+            </Grid>
+            <Grid container direction="row-reverse">
+              <Grid item>
+                <Button type="button" variant="outlined" href="/" sx={{ m: 1 }}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
                   onClick={saveOrUpdatePerson}
+                  sx={{ m: 1 }}
                 >
                   Save
-                </button>
-                <Link
-                  className="btn btn-danger"
-                  to={"/persons"}
-                  style={{ marginLeft: "10px" }}
-                >
-                  Cancel
-                </Link>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Fragment>
+                </Button>
+              </Grid>
+            </Grid>
+          </CardContent>
+
+          {/* <button
+                      className="btn btn-success"
+                      onClick={saveOrUpdatePerson}
+                    >
+                      Save
+                    </button>
+                    <Link
+                      className="btn btn-danger"
+                      to={"/persons"}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Cancel
+                    </Link> */}
+        </Card>
+      </Container>
+    </Box>
   );
 }
 
