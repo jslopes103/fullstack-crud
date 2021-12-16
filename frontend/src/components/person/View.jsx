@@ -9,7 +9,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PersonService from "../../service/person.service";
 import BackIcon from "@mui/icons-material/ChevronLeft";
@@ -18,9 +18,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import { red } from "@mui/material/colors";
 
 function ViewPersonComponent() {
+  // This URL has param, so we need to tell React
   const params = useParams();
+  // This component will redirect using functions, so we need to tell React
   const nav = useNavigate();
 
+  // Hooks useState
   const [_id] = useState(params._id);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -28,16 +31,23 @@ function ViewPersonComponent() {
 
   const DeleteColor = red[500];
 
-  PersonService.getPersonById(_id).then((res) => {
-    let person = res.data;
+  // Using useEffect hook to request during render
+  useEffect(() => {
+    PersonService.getPersonById(_id).then((res) => {
+      // Get person from the response
+      let person = res.data;
 
-    setFirstName(person.firstName);
-    setLastName(person.lastName);
-    setEmail(person.email);
-  });
+      // Set states
+      setFirstName(person.firstName);
+      setLastName(person.lastName);
+      setEmail(person.email);
+    });
+  }, [_id]);
 
+  // Function to delete item and redirect to "/"
   const deleteItem = (_id) => {
     PersonService.deletePerson(_id).then(() => {
+      // redirect
       nav("/");
     });
   };

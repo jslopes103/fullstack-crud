@@ -6,15 +6,18 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import React from "react";
+import React, { useState } from "react";
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 
 function Menu() {
-  const [state, setState] = React.useState({
+  // Controlling side Drawer with useState
+  const [state, setState] = useState({
     left: false,
   });
 
+  // Using this function to know when to open and when not
   const toggleDrawer = (anchor, open) => (event) => {
+    // One of the following events will not trigger
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -22,6 +25,7 @@ function Menu() {
       return;
     }
 
+    // else, set state
     setState({ ...state, [anchor]: open });
   };
 

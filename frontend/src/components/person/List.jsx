@@ -20,11 +20,15 @@ import { Box } from "@mui/system";
 import { red, blue } from "@mui/material/colors";
 
 function ListPersonComponent() {
+  // useState hook to use variables and change it simple
   let [persons, setPersons] = useState([]);
 
+  // useEffect hook to make API calls on mount component
   useEffect(() => {
     PersonService.getPersons().then((res) => {
+      // Get array of people into responde
       const arr = res.data;
+      // Set state with the received array
       setPersons(arr);
     });
   }, []);
@@ -34,6 +38,7 @@ function ListPersonComponent() {
 
   const deleteItem = (_id) => {
     PersonService.deletePerson(_id).then(() => {
+      // When deleted, just update the list without the person deleted
       setPersons(persons.filter((person) => person._id !== _id));
     });
   };
