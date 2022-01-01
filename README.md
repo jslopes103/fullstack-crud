@@ -1,6 +1,6 @@
 # My contacts list
 
-This is a fullstack proect with two services, backend and frontend.
+This is a fullstack project with two services, backend and frontend.
 
 Once both services is up you can access by the localhost:3000 URL
 
